@@ -107,31 +107,6 @@
       color: #667eea;
     }
 
-    .result-box {
-      display: none;
-      background: #e8f5e9;
-      border: 2px solid #4caf50;
-      border-radius: 10px;
-      padding: 20px;
-      margin-top: 20px;
-    }
-
-    .result-box.show {
-      display: block;
-      animation: fadeIn 0.5s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .result-box p {
-      font-size: 1.1rem;
-      color: #2e7d32;
-      font-weight: bold;
-    }
-
     .back-link {
       display: inline-block;
       margin-top: 20px;
@@ -180,17 +155,9 @@
     <div class="instruction">
       <p>
         上のボタンをタップすると<br>
-        <strong>0〜99</strong>の数字がランダムに表示されます．<br><br>
+        <strong>1〜4</strong>の数字がランダムに表示されます．<br><br>
         表示された数字を覚えて，<br>
         アンケートに戻って入力してください．
-      </p>
-    </div>
-
-    <div class="result-box" id="resultBox">
-      <p>あなたの数字は <span id="resultNumber"></span> です</p>
-      <p id="conditionText" style="font-size: 1rem; font-weight: bold; margin-top: 15px; color: #667eea;"></p>
-      <p style="font-size: 0.9rem; font-weight: normal; margin-top: 10px; color: #555;">
-        この数字をアンケート画面で入力してください
       </p>
     </div>
   </div>
@@ -198,50 +165,30 @@
   <script>
     let isSpinning = false;
 
-    // 条件の定義
-    const conditions = {
-      0: '条件0（本人回答）',
-      1: '条件1（標準AI）',
-      2: '条件2（システムプロンプティングAI）',
-      3: '条件3（ファインチューニングAI）'
-    };
-
     function generateNumber() {
       if (isSpinning) return;
 
       isSpinning = true;
       const display = document.getElementById('numberDisplay');
       const btn = document.getElementById('generateBtn');
-      const resultBox = document.getElementById('resultBox');
-      const resultNumber = document.getElementById('resultNumber');
-      const conditionText = document.getElementById('conditionText');
 
       btn.disabled = true;
       display.classList.add('spinning');
-      resultBox.classList.remove('show');
 
       // アニメーション：数字をランダムに切り替え
       let count = 0;
       const maxCount = 20;
       const interval = setInterval(() => {
-        display.textContent = Math.floor(Math.random() * 100);
+        display.textContent = Math.floor(Math.random() * 4) + 1;
         count++;
 
         if (count >= maxCount) {
           clearInterval(interval);
 
-          // 最終的な数字を決定（0〜99）
-          const finalNumber = Math.floor(Math.random() * 100);
+          // 最終的な数字を決定（1〜4）
+          const finalNumber = Math.floor(Math.random() * 4) + 1;
           display.textContent = finalNumber;
           display.classList.remove('spinning');
-
-          // 4で割った余りで条件を決定
-          const conditionId = finalNumber % 4;
-
-          // 結果表示
-          resultNumber.textContent = finalNumber;
-          conditionText.textContent = `${finalNumber} ÷ 4 = ${Math.floor(finalNumber / 4)} あまり ${conditionId} → ${conditions[conditionId]}`;
-          resultBox.classList.add('show');
 
           btn.disabled = false;
           btn.textContent = 'もう一度生成する';
